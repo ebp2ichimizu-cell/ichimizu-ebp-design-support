@@ -1,0 +1,66 @@
+
+/* 「このサイトについて」折りたたみ説明 */
+.about-site{
+  margin-bottom:20px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--white);
+  overflow:hidden;
+}
+.about-site summary{
+  position:relative;
+  padding:17px 52px 17px 20px;
+  cursor:pointer;
+  list-style:none;
+  font-weight:800;
+  color:var(--navy);
+  background:#f0f4f7;
+  user-select:none;
+}
+.about-site summary::-webkit-details-marker{display:none}
+.about-site summary::after{
+  content:"+";
+  position:absolute;
+  right:20px;
+  top:50%;
+  transform:translateY(-50%);
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border:1px solid #bfc9d4;
+  border-radius:50%;
+  background:#fff;
+  font-size:1.15rem;
+  line-height:1;
+}
+.about-site[open] summary::after{content:"−"}
+.about-site summary:focus-visible{
+  outline:3px solid rgba(11,76,133,.18);
+  outline-offset:-3px;
+}
+.about-site__body{
+  padding:20px 22px 18px;
+  border-top:1px solid var(--line);
+}
+.about-site__lead{
+  margin:0 0 16px;
+  color:var(--ink);
+  line-height:1.75;
+}
+.about-site__list{
+  margin:0;
+  padding-left:1.3rem;
+}
+.about-site__list li{
+  margin:0 0 11px;
+  line-height:1.75;
+}
+.about-site__list li:last-child{margin-bottom:0}
+
+@media (max-width:680px){
+  .about-site{border-radius:11px}
+  .about-site summary{padding:15px 48px 15px 17px}
+  .about-site summary::after{right:16px}
+  .about-site__body{padding:17px 18px 16px}
+}
