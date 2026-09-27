@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1624">
+  <title>いちみず会｜EBP実践設計支援</title>
+  <meta name="description" content="現場の課題を整理し、利用中のAIでEBP実践設計を進めるためのプロンプトを生成します。">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <p class="eyebrow">いちみず会</p>
+      <h1>EBP実践設計支援</h1>
+      <p class="lead">分かる範囲を入力すると、利用中のAIで問題分析・施策検討・測定・評価設計まで対話的に進めるためのプロンプトを生成します。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="notice danger" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">入力前に必ず確認してください</h2>
+      <p><strong>個人情報、具体的な事件・捜査情報、捜査手法、未公表の内部情報、秘密情報などは入力しないでください。</strong></p>
+      <p>必要な場合は「A地区」「対象施設A」「対象者群A」などに匿名化・抽象化してください。このページは入力内容を外部サーバーへ送信せず、ブラウザ内でプロンプトを生成します。</p>
+    </section>
+
+    <section id="formView" class="panel">
+      <div class="section-head">
+        <div>
+          <p class="step">STEP 1</p>
+          <h2>分かる範囲を入力</h2>
+        </div>
+        <p class="muted">空欄があっても構いません。必要な追加情報は、コピー後に利用中のAIが対話形式で確認します。</p>
+      </div>
+
+      <form id="ebpForm" novalidate>
+        <div class="field required">
+          <label for="issue">現場の課題 <span>必須</span></label>
+          <p class="help">今、何が問題になっていますか。</p>
+          <textarea id="issue" rows="4" required placeholder="例：駅周辺で自転車盗が多く、現在の啓発対策が十分に機能しているか分からない。"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="target">対象・場所</label>
+          <p class="help">課題に関係する地域、施設、対象集団などを、分かる粒度で入力してください。詳細住所は入力しないでください。</p>
+          <textarea id="target" rows="3" placeholder="例：A市全域、B駅周辺、C駐輪場、学校区、商店街周辺、特定の利用者層など"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="known">現在分かっていること</label>
+          <p class="help">発生状況、特徴、傾向、観察結果など、確認できている事実を書いてください。</p>
+          <textarea id="known" rows="4" placeholder="例：特定の駐輪場で件数が多い。無施錠車の被害が多い。過去3年分の発生件数がある。"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="currentMeasures">現在実施している対策</label>
+          <p class="help">実施中の対策がなければ空欄で構いません。</p>
+          <textarea id="currentMeasures" rows="3" placeholder="例：啓発ポスター掲示、巡回、ワイヤーロック配布"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="ideas">現在考えている対策</label>
+          <p class="help">まだ案がない場合は空欄で構いません。AIに複数案を検討させることができます。</p>
+          <textarea id="ideas" rows="3" placeholder="例：二重ロック促進、駐輪場環境の改善　※決まっていなければ空欄"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="outcome">期待する変化</label>
+          <p class="help">最終的な変化だけでも構いません。中間アウトカムはAIが整理します。</p>
+          <textarea id="outcome" rows="3" placeholder="例：自転車盗を減らしたい、二重ロック率を高めたい、住民の防犯行動を増やしたい"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="data">利用可能なデータ</label>
+          <p class="help">現在使えるデータ、または取得できそうなデータを書いてください。</p>
+          <textarea id="data" rows="3" placeholder="例：月別発生件数、駐輪台数、施錠状況の観察記録、アンケート結果"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="constraints">人員・期間・予算等の制約</label>
+          <p class="help">現場で実際にできることを考えるための条件です。</p>
+          <textarea id="constraints" rows="3" placeholder="例：担当2名、3か月程度、新規予算はほぼない"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="other">その他の現場事情</label>
+          <p class="help">関係機関との協力、実施上の制約、全地点同時実施の必要性などがあれば入力してください。</p>
+          <textarea id="other" rows="3" placeholder="例：施設管理者との協力は可能。全地点に同時に介入する必要がある。"></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="reviewBtn" class="primary" type="submit">内容を確認</button>
+          <button id="clearBtn" class="secondary" type="button">入力をクリア</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="reviewView" class="panel hidden" aria-live="polite">
+      <div class="section-head">
+        <div>
+          <p class="step">STEP 2</p>
+          <h2>入力内容と安全確認</h2>
+        </div>
+        <p class="muted">ブラウザ内で簡易スキャンしています。自動判定には限界があるため、必ずご自身でも確認してください。</p>
+      </div>
+
+      <div id="scanSummary" class="scan-summary"></div>
+      <div id="reviewFields" class="review-fields"></div>
+
+      <div id="highRiskBlock" class="notice danger hidden">
+        <h3>修正が必要です</h3>
+        <p>明確な個人情報候補が検出されています。該当箇所を削除・匿名化してから再度確認してください。</p>
+      </div>
+
+      <div id="warningBlock" class="notice warning hidden">
+        <h3>確認してください</h3>
+        <p>業務上の機微情報に該当する可能性がある表現が検出されています。問題がないことを確認したうえで進んでください。</p>
+        <label class="confirm-check">
+          <input id="warningAck" type="checkbox">
+          <span>個人情報・具体的な事件／捜査情報・未公表情報等が含まれていないことを確認しました。</span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="backBtn" class="secondary" type="button">入力に戻る</button>
+        <button id="copyBtn" class="primary" type="button">この内容でプロンプトをコピー</button>
+      </div>
+
+      <p id="copyStatus" class="copy-status" role="status"></p>
+    </section>
+
+    <section class="panel compact">
+      <h2>コピー後の使い方</h2>
+      <ol>
+        <li>「この内容でプロンプトをコピー」を押します。</li>
+        <li>普段利用しているChatGPT、Gemini、Copilot等のAIを開きます。</li>
+        <li>新しいチャットに貼り付けて送信します。</li>
+        <li>以後はAIからの追加質問に答えながら、施策案・測定方法・評価設計を進めます。</li>
+      </ol>
+      <p class="muted">このページ自体はAIへ送信しません。どのAIを利用するかは、所属組織のルールに従ってください。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>いちみず会｜EBP実践設計支援</p>
+      <p class="muted">このツールは意思決定を代行するものではなく、現場の課題整理・エビデンス確認・評価設計を支援するためのものです。</p>
+    </div>
+  </footer>
+
+  <script src="resource-links.js"></script>
+  <script src="prompt-template.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
