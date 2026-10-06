@@ -236,7 +236,7 @@
           </div>
 
           <div class="field">
-            <label for="designCharacter">キャラクター</label>
+            <label for="designCharacter">公式キャラクター</label>
             <select id="designCharacter" class="select-input">
               <option value="あり">あり</option>
               <option value="なし" selected>なし</option>
@@ -245,18 +245,38 @@
           </div>
 
           <div class="field">
-            <label for="designCharacterRole">キャラクターの役割</label>
+            <label for="designCharacterRole">公式キャラクターの役割</label>
             <select id="designCharacterRole" class="select-input">
               <option value="主役">主役</option>
               <option value="補助" selected>補助</option>
               <option value="ワンポイント">ワンポイント</option>
             </select>
           </div>
+
+          <div class="field">
+            <label for="designCharacterCount">公式キャラクターの設置箇所数</label>
+            <select id="designCharacterCount" class="select-input">
+              <option value="1箇所" selected>1箇所</option>
+              <option value="2箇所">2箇所</option>
+              <option value="3箇所">3箇所</option>
+              <option value="4箇所以上">4箇所以上</option>
+              <option value="未定">未定</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="designOtherIllustrations">その他のイラスト</label>
+            <select id="designOtherIllustrations" class="select-input">
+              <option value="AIに生成・配置を任せる" selected>AIに生成・配置を任せる</option>
+              <option value="使用しない">使用しない</option>
+              <option value="提案のみ（生成はしない）">提案のみ（生成はしない）</option>
+            </select>
+          </div>
         </div>
 
         <div class="field">
           <label for="designRequired">必ず入れたい文字・要素（任意）</label>
-          <p class="help">組織名、キャンペーン名、QRコード、連絡先、既に決まっているコピーなど。</p>
+          <p class="help">組織名、キャンペーン名、QRコード、連絡先、既に決まっているコピー、使用予定の公式キャラクター名など。</p>
           <textarea id="designRequired" rows="3" placeholder="例：○○警察署、二重ロックを呼びかける文言、QRコード用スペース"></textarea>
         </div>
 

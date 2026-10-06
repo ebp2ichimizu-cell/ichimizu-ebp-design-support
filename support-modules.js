@@ -212,8 +212,10 @@
   function refreshCharacterRole(){
     const charValue=$("designCharacter")?.value || "なし";
     const role=$("designCharacterRole");
-    if(!role) return;
-    role.disabled=(charValue==="なし");
+    const count=$("designCharacterCount");
+    const enabled=(charValue==="あり");
+    if(role) role.disabled=!enabled;
+    if(count) count.disabled=!enabled;
   }
 
   function buildDesignPrompt(){
@@ -222,21 +224,33 @@
     const size=$("designSize")?.value || "未指定";
     const character=$("designCharacter")?.value || "なし";
     const characterRole=$("designCharacterRole")?.value || "補助";
+    const characterCount=$("designCharacterCount")?.value || "1箇所";
+    const otherIllustrations=$("designOtherIllustrations")?.value || "AIに生成・配置を任せる";
     const required=$("designRequired")?.value.trim() || "特になし";
 
     if(!source) return "";
 
     let characterInstruction="";
     if(character==="あり"){
-      characterInstruction=`キャラクターを使用します。役割は「${characterRole}」です。
-キャラクター自体を新規に描き込まず、後から既存の公式キャラクター画像を貼り付けられる空きスペースを確保してください。
-各案で、配置位置・おおよその占有面積・文字や他要素との関係を具体的に示してください。`;
+      characterInstruction=`公式キャラクターを使用します。役割は「${characterRole}」、設置箇所数は「${characterCount}」です。
+公式キャラクター自体を新規に描いたり改変したりせず、後から正式画像を貼り付けられる空きスペースを指定箇所数だけ確保してください。
+各案で、それぞれの配置位置・おおよその占有面積・文字や他要素との関係を具体的に示してください。`;
     }else if(character==="未定"){
-      characterInstruction=`キャラクターの使用は未定です。
-キャラクターなしでも成立するレイアウトとしつつ、必要になった場合に後から既存キャラクター画像を置ける余白または差し替え領域を確保してください。
-キャラクターを追加しても主メッセージや情報階層が崩れない構成にしてください。`;
+      characterInstruction=`公式キャラクターの使用は未定です。
+公式キャラクターなしでも成立するレイアウトとしつつ、必要になった場合に後から正式画像を置ける余白または差し替え領域を確保してください。
+追加しても主メッセージや情報階層が崩れない構成にしてください。`;
     }else{
-      characterInstruction=`キャラクターは使用しません。キャラクター用の空き領域は不要です。`;
+      characterInstruction=`公式キャラクターは使用しません。公式キャラクター用の空き領域は不要です。`;
+    }
+
+    let illustrationInstruction="";
+    if(otherIllustrations==="AIに生成・配置を任せる"){
+      illustrationInstruction=`公式キャラクター以外の補助イラストは、施策目的と対象者に適した範囲でAIが生成・配置案まで提案してください。
+ただし、装飾のためだけに増やさず、主メッセージや具体的行動の理解を助ける場合に限って使用してください。`;
+    }else if(otherIllustrations==="提案のみ（生成はしない）"){
+      illustrationInstruction=`公式キャラクター以外の補助イラストは、必要性と配置案のみ提案してください。実際のイラスト生成は行わず、後から差し替えられるプレースホルダーとして示してください。`;
+    }else{
+      illustrationInstruction=`公式キャラクター以外のイラストは使用しません。写真や図形、文字構成等で成立する案にしてください。`;
     }
 
     return `# 防犯施策｜広報物デザイン支援プロンプト
@@ -259,8 +273,13 @@ ${source}
 媒体：${medium}
 出力サイズ：${size}
 
-キャラクター：${character}
+公式キャラクター：${character}
+公式キャラクターの役割：${character==="あり" ? characterRole : "該当なし"}
+公式キャラクターの設置箇所数：${character==="あり" ? characterCount : "該当なし"}
 ${characterInstruction}
+
+その他のイラスト：${otherIllustrations}
+${illustrationInstruction}
 
 必ず入れたい文字・要素：
 ${required}
@@ -269,7 +288,7 @@ ${required}
 1. 指定した媒体とサイズに合わせて、文字量・余白・視認距離・情報階層を調整してください。
 2. 「何をしてほしいか」が一目で分かることを優先してください。
 3. 長い説明より、主メッセージ → 具体的な行動 → 補足情報の順で読める構成にしてください。
-4. 写真、イラスト、キャラクター等は、後から差し替え可能な構造を優先してください。
+4. 公式キャラクターは必ず後から正式画像を貼り付けられる構造にしてください。その他のイラストは上記の選択条件に従ってください。
 5. ロゴ、QRコード、組織名等を入れる場合は、本文を邪魔しない固定領域として扱ってください。
 6. スマホ画面では小画面での可読性、のぼり旗・横断幕では遠距離からの瞬時の理解を特に重視してください。
 7. 防犯行動を促す場合、抽象的な「気をつけましょう」だけで終わらず、可能なら具体的な行動を示してください。
@@ -287,7 +306,7 @@ ${required}
 - サブコピー
 - レイアウト構成
 - 写真・イラスト等の配置案
-- キャラクターを使用する場合の貼付スペース
+- 公式キャラクターを使用する場合の貼付スペース（指定した設置箇所数を反映）
 - 色・文字・視認性の考え方
 - 対象者が取るべき行動がどこで分かるか
 - 注意点・誤解される可能性
@@ -306,11 +325,12 @@ ${required}
 
 ## 画像生成AI用プロンプト
 各案について、画像生成AIにそのまま渡せる日本語プロンプトを1本ずつ作成してください。
-ただし、後から差し替えるキャラクター・ロゴ・QRコードは描き込まず、「空きスペース」「プレースホルダー」として指定してください。
+ただし、公式キャラクター・ロゴ・QRコードは描き込まず、「空きスペース」「プレースホルダー」として指定してください。
+その他のイラストについては、上記の「AIに生成・配置を任せる／使用しない／提案のみ」の選択を厳守してください。
 
 ## 再編集用レイアウト仕様
 最後に、PowerPoint等で再現・修正しやすいように、
-上部／中央／下部、または左／中央／右などの領域単位で、文字・画像・キャラクター・ロゴ等の配置を簡潔に示してください。`;
+上部／中央／下部、または左／中央／右などの領域単位で、文字・画像・公式キャラクター・その他イラスト・ロゴ等の配置を簡潔に示してください。`;
   }
 
   function generateDesignPrompt(){
@@ -336,6 +356,11 @@ ${required}
   $("designClearBtn")?.addEventListener("click",()=>{
     if($("designSource")) $("designSource").value="";
     if($("designRequired")) $("designRequired").value="";
+    if($("designCharacter")) $("designCharacter").value="なし";
+    if($("designCharacterRole")) $("designCharacterRole").value="補助";
+    if($("designCharacterCount")) $("designCharacterCount").value="1箇所";
+    if($("designOtherIllustrations")) $("designOtherIllustrations").value="AIに生成・配置を任せる";
+    refreshCharacterRole();
     if($("designPrompt")) $("designPrompt").value="";
     $("designPromptWrap")?.classList.add("hidden");
     if($("designStatus")) $("designStatus").textContent="";
