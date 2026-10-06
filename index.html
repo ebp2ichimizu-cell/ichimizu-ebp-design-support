@@ -8,6 +8,7 @@
   <meta name="description" content="現場の課題を整理し、利用中のAIでEBP実践設計を進めるためのプロンプトを生成します。">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="site-about.css">
+  <link rel="stylesheet" href="support-modules.css">
 </head>
 <body>
   <header class="site-header">
@@ -115,6 +116,38 @@
       </form>
     </section>
 
+    <section id="knowledgeBridge" class="panel module-panel" aria-labelledby="knowledgeBridgeTitle">
+      <div class="section-head">
+        <div>
+          <p class="step">補助機能 A</p>
+          <h2 id="knowledgeBridgeTitle">Knowledge Bridge</h2>
+        </div>
+        <p class="muted">現場の言葉を、研究を探すための検索語・概念候補へ橋渡しします。</p>
+      </div>
+      <p class="module-note"><strong>ここで表示する理論・メカニズム・検索語は「候補」です。</strong> 問題の原因や適切な施策を確定するものではありません。入力内容は外部へ送信せず、ブラウザ内で照合します。</p>
+      <div class="actions module-actions">
+        <button id="bridgeRunBtn" class="secondary" type="button">入力内容から候補を整理</button>
+        <button id="bridgeCopyBtn" class="secondary" type="button" disabled>選択した検索語をコピー</button>
+      </div>
+      <p id="bridgeStatus" class="copy-status" role="status"></p>
+      <div id="bridgeResults" class="bridge-results hidden">
+        <div class="bridge-group"><h3>課題・犯罪類型の候補</h3><div id="bridgeProblems" class="tag-list"></div></div>
+        <div class="bridge-group"><h3>メカニズムの候補</h3><div id="bridgeMechanisms" class="tag-list"></div></div>
+        <div class="bridge-group"><h3>理論・枠組みの候補</h3><div id="bridgeTheories" class="tag-list"></div></div>
+        <div class="bridge-group"><h3>介入・検索語の候補</h3><div id="bridgeInterventions" class="tag-list"></div></div>
+        <div class="field module-extra-field">
+          <label for="bridgeExtra">追加したい検索語</label>
+          <p class="help">候補にない用語があれば追記できます。日本語・英語どちらでも構いません。</p>
+          <input id="bridgeExtra" class="text-input" type="text" placeholder="例：施錠行動, bicycle locking, guardianship">
+        </div>
+        <div class="deep-links" aria-label="検索先">
+          <button id="bridgeHubBtn" type="button" class="link-button" disabled>研究HUBで検索</button>
+          <button id="bridgeOverseasProblemBtn" type="button" class="link-button" disabled>海外EBPナビ：課題から検索</button>
+          <button id="bridgeOverseasInterventionBtn" type="button" class="link-button" disabled>海外EBPナビ：対策から検索</button>
+        </div>
+      </div>
+    </section>
+
     <section id="reviewView" class="panel hidden" aria-live="polite">
       <div class="section-head">
         <div>
@@ -149,13 +182,54 @@
       <p id="copyStatus" class="copy-status" role="status"></p>
     </section>
 
+    <section id="evidenceCheck" class="panel module-panel" aria-labelledby="evidenceCheckTitle">
+      <div class="section-head">
+        <div>
+          <p class="step">補助機能 B</p>
+          <h2 id="evidenceCheckTitle">Evidence Check</h2>
+        </div>
+        <p class="muted">AI回答を貼り戻し、施策・検索語・文献候補を原典確認へつなぎます。</p>
+      </div>
+      <p class="module-note">AI回答に含まれる研究名・DOI・URLは、そのまま正しいとは限りません。ここでは検索候補を整理するだけで、文献の実在や効果を自動認定しません。</p>
+      <div class="field">
+        <label for="evidencePaste">AI回答または「EBP確認用」ブロック</label>
+        <p class="help">AI回答の末尾にある [EBP_CHECK] ～ [/EBP_CHECK] を貼ると最も安定して抽出できます。回答全体を貼っても簡易抽出します。</p>
+        <textarea id="evidencePaste" rows="9" placeholder="[EBP_CHECK]&#10;施策候補: ...&#10;検索キーワード_日本語: ...&#10;検索キーワード_英語: ...&#10;関連概念: ...&#10;確認対象文献: ...&#10;[/EBP_CHECK]"></textarea>
+      </div>
+      <div class="actions module-actions">
+        <button id="evidenceParseBtn" class="secondary" type="button">確認候補を整理</button>
+        <button id="evidenceClearBtn" class="secondary" type="button">貼付内容をクリア</button>
+      </div>
+      <p id="evidenceStatus" class="copy-status" role="status"></p>
+      <div id="evidenceResults" class="evidence-results hidden">
+        <div class="evidence-grid">
+          <div><h3>施策候補</h3><div id="evidenceInterventions" class="tag-list"></div></div>
+          <div><h3>検索キーワード</h3><div id="evidenceKeywords" class="tag-list"></div></div>
+          <div><h3>関連概念</h3><div id="evidenceConcepts" class="tag-list"></div></div>
+        </div>
+        <div class="reference-box">
+          <h3>確認対象文献・識別子</h3>
+          <div id="evidenceReferences" class="reference-list"></div>
+        </div>
+        <div class="deep-links" aria-label="ファクトチェック検索先">
+          <button id="evidenceHubBtn" type="button" class="link-button" disabled>研究HUBで確認</button>
+          <button id="evidenceOverseasProblemBtn" type="button" class="link-button" disabled>海外EBPナビ：課題から確認</button>
+          <button id="evidenceOverseasInterventionBtn" type="button" class="link-button" disabled>海外EBPナビ：対策から確認</button>
+          <button id="evidenceCopyBtn" type="button" class="link-button" disabled>検索語をコピー</button>
+        </div>
+        <p class="help evidence-disclaimer">検索結果が見つからない場合も「研究が存在しない」とは断定せず、原著・J-STAGE・CiNii Research・出版社・公的機関等を追加確認してください。</p>
+      </div>
+    </section>
+
     <section class="panel compact">
       <h2>コピー後の使い方</h2>
       <ol>
+        <li>必要に応じてKnowledge Bridgeで検索語・概念候補を確認します。</li>
         <li>「この内容でプロンプトをコピー」を押します。</li>
         <li>所属組織で利用が認められているChatGPT、Gemini、Copilot等のAIを開きます。</li>
         <li>新しいチャットに貼り付けて送信します。</li>
-        <li>以後はAIからの追加質問に答えながら、施策案・測定方法・評価設計を進めます。</li>
+        <li>AIからの追加質問に答えながら、施策案・測定方法・評価設計を進めます。</li>
+        <li>AIが示した施策・研究はEvidence Checkへ貼り戻し、研究HUB・海外EBPナビや原典で確認します。</li>
       </ol>
       <p class="muted">このページ自体はAIへ送信しません。どのAIを利用するかは、所属組織のルールに従ってください。</p>
     </section>
@@ -169,7 +243,9 @@
   </footer>
 
   <script src="resource-links.js"></script>
+  <script src="knowledge-bridge-data.js"></script>
   <script src="prompt-template.js"></script>
   <script src="app.js"></script>
+  <script src="support-modules.js"></script>
 </body>
 </html>
