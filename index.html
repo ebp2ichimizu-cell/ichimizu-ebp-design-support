@@ -115,39 +115,6 @@
         </div>
       </form>
     </section>
-
-    <section id="knowledgeBridge" class="panel module-panel" aria-labelledby="knowledgeBridgeTitle">
-      <div class="section-head">
-        <div>
-          <p class="step">補助機能 A</p>
-          <h2 id="knowledgeBridgeTitle">Knowledge Bridge</h2>
-        </div>
-        <p class="muted">現場の言葉を、研究を探すための検索語・概念候補へ橋渡しします。</p>
-      </div>
-      <p class="module-note"><strong>ここで表示する理論・メカニズム・検索語は「候補」です。</strong> 問題の原因や適切な施策を確定するものではありません。入力内容は外部へ送信せず、ブラウザ内で照合します。</p>
-      <div class="actions module-actions">
-        <button id="bridgeRunBtn" class="secondary" type="button">入力内容から候補を整理</button>
-        <button id="bridgeCopyBtn" class="secondary" type="button" disabled>選択した検索語をコピー</button>
-      </div>
-      <p id="bridgeStatus" class="copy-status" role="status"></p>
-      <div id="bridgeResults" class="bridge-results hidden">
-        <div class="bridge-group"><h3>課題・犯罪類型の候補</h3><div id="bridgeProblems" class="tag-list"></div></div>
-        <div class="bridge-group"><h3>メカニズムの候補</h3><div id="bridgeMechanisms" class="tag-list"></div></div>
-        <div class="bridge-group"><h3>理論・枠組みの候補</h3><div id="bridgeTheories" class="tag-list"></div></div>
-        <div class="bridge-group"><h3>介入・検索語の候補</h3><div id="bridgeInterventions" class="tag-list"></div></div>
-        <div class="field module-extra-field">
-          <label for="bridgeExtra">追加したい検索語</label>
-          <p class="help">候補にない用語があれば追記できます。日本語・英語どちらでも構いません。</p>
-          <input id="bridgeExtra" class="text-input" type="text" placeholder="例：施錠行動, bicycle locking, guardianship">
-        </div>
-        <div class="deep-links" aria-label="検索先">
-          <button id="bridgeHubBtn" type="button" class="link-button" disabled>研究HUBで検索</button>
-          <button id="bridgeOverseasProblemBtn" type="button" class="link-button" disabled>海外EBPナビ：課題から検索</button>
-          <button id="bridgeOverseasInterventionBtn" type="button" class="link-button" disabled>海外EBPナビ：対策から検索</button>
-        </div>
-      </div>
-    </section>
-
     <section id="reviewView" class="panel hidden" aria-live="polite">
       <div class="section-head">
         <div>
@@ -185,7 +152,7 @@
     <section id="evidenceCheck" class="panel module-panel" aria-labelledby="evidenceCheckTitle">
       <div class="section-head">
         <div>
-          <p class="step">補助機能 B</p>
+          <p class="step">補助機能</p>
           <h2 id="evidenceCheckTitle">Evidence Check</h2>
         </div>
         <p class="muted">AI回答を貼り戻し、施策・検索語・文献候補を原典確認へつなぎます。</p>
@@ -224,7 +191,6 @@
     <section class="panel compact">
       <h2>コピー後の使い方</h2>
       <ol>
-        <li>必要に応じてKnowledge Bridgeで検索語・概念候補を確認します。</li>
         <li>「この内容でプロンプトをコピー」を押します。</li>
         <li>所属組織で利用が認められているChatGPT、Gemini、Copilot等のAIを開きます。</li>
         <li>新しいチャットに貼り付けて送信します。</li>
@@ -243,7 +209,6 @@
   </footer>
 
   <script src="resource-links.js"></script>
-  <script src="knowledge-bridge-data.js"></script>
   <script src="prompt-template.js"></script>
   <script src="app.js"></script>
   <script src="support-modules.js"></script>
