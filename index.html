@@ -149,44 +149,138 @@
       <p id="copyStatus" class="copy-status" role="status"></p>
     </section>
 
-    <section id="evidenceCheck" class="panel module-panel" aria-labelledby="evidenceCheckTitle">
-      <div class="section-head">
-        <div>
-          <p class="step">補助機能</p>
-          <h2 id="evidenceCheckTitle">Evidence Check</h2>
-        </div>
+    <details id="evidenceCheck" class="panel module-panel tool-accordion">
+      <summary class="tool-summary">
+        <span>
+          <span class="step">補助機能</span>
+          <strong>Evidence Check</strong>
+        </span>
+        <span class="tool-summary-note">AI回答を原典確認へつなぐ</span>
+      </summary>
+      <div class="tool-accordion-body">
         <p class="muted">AI回答を貼り戻し、施策・検索語・文献候補を原典確認へつなぎます。</p>
+              </div>
+              <p class="module-note">AI回答に含まれる研究名・DOI・URLは、そのまま正しいとは限りません。ここでは検索候補を整理するだけで、文献の実在や効果を自動認定しません。</p>
+              <div class="field">
+                <label for="evidencePaste">AI回答または「EBP確認用」ブロック</label>
+                <p class="help">AI回答の末尾にある [EBP_CHECK] ～ [/EBP_CHECK] を貼ると最も安定して抽出できます。回答全体を貼っても簡易抽出します。</p>
+                <textarea id="evidencePaste" rows="9" placeholder="[EBP_CHECK]&#10;施策候補: ...&#10;検索キーワード_日本語: ...&#10;検索キーワード_英語: ...&#10;関連概念: ...&#10;確認対象文献: ...&#10;[/EBP_CHECK]"></textarea>
+              </div>
+              <div class="actions module-actions">
+                <button id="evidenceParseBtn" class="secondary" type="button">確認候補を整理</button>
+                <button id="evidenceClearBtn" class="secondary" type="button">貼付内容をクリア</button>
+              </div>
+              <p id="evidenceStatus" class="copy-status" role="status"></p>
+              <div id="evidenceResults" class="evidence-results hidden">
+                <div class="evidence-grid">
+                  <div><h3>施策候補</h3><div id="evidenceInterventions" class="tag-list"></div></div>
+                  <div><h3>検索キーワード</h3><div id="evidenceKeywords" class="tag-list"></div></div>
+                  <div><h3>関連概念</h3><div id="evidenceConcepts" class="tag-list"></div></div>
+                </div>
+                <div class="reference-box">
+                  <h3>確認対象文献・識別子</h3>
+                  <div id="evidenceReferences" class="reference-list"></div>
+                </div>
+                <div class="deep-links" aria-label="ファクトチェック検索先">
+                  <button id="evidenceHubBtn" type="button" class="link-button" disabled>研究HUBで確認</button>
+                  <button id="evidenceOverseasProblemBtn" type="button" class="link-button" disabled>海外EBPナビ：課題から確認</button>
+                  <button id="evidenceOverseasInterventionBtn" type="button" class="link-button" disabled>海外EBPナビ：対策から確認</button>
+                  <button id="evidenceCopyBtn" type="button" class="link-button" disabled>検索語をコピー</button>
+                </div>
+                <p class="help evidence-disclaimer">検索結果が見つからない場合も「研究が存在しない」とは断定せず、原著・J-STAGE・CiNii Research・出版社・公的機関等を追加確認してください。</p>
+              </div>
       </div>
-      <p class="module-note">AI回答に含まれる研究名・DOI・URLは、そのまま正しいとは限りません。ここでは検索候補を整理するだけで、文献の実在や効果を自動認定しません。</p>
-      <div class="field">
-        <label for="evidencePaste">AI回答または「EBP確認用」ブロック</label>
-        <p class="help">AI回答の末尾にある [EBP_CHECK] ～ [/EBP_CHECK] を貼ると最も安定して抽出できます。回答全体を貼っても簡易抽出します。</p>
-        <textarea id="evidencePaste" rows="9" placeholder="[EBP_CHECK]&#10;施策候補: ...&#10;検索キーワード_日本語: ...&#10;検索キーワード_英語: ...&#10;関連概念: ...&#10;確認対象文献: ...&#10;[/EBP_CHECK]"></textarea>
-      </div>
-      <div class="actions module-actions">
-        <button id="evidenceParseBtn" class="secondary" type="button">確認候補を整理</button>
-        <button id="evidenceClearBtn" class="secondary" type="button">貼付内容をクリア</button>
-      </div>
-      <p id="evidenceStatus" class="copy-status" role="status"></p>
-      <div id="evidenceResults" class="evidence-results hidden">
-        <div class="evidence-grid">
-          <div><h3>施策候補</h3><div id="evidenceInterventions" class="tag-list"></div></div>
-          <div><h3>検索キーワード</h3><div id="evidenceKeywords" class="tag-list"></div></div>
-          <div><h3>関連概念</h3><div id="evidenceConcepts" class="tag-list"></div></div>
+    </details>
+
+
+    <details id="designAssist" class="panel module-panel tool-accordion">
+      <summary class="tool-summary">
+        <span>
+          <span class="step">施策実装支援</span>
+          <strong>広報物作成支援</strong>
+        </span>
+        <span class="tool-summary-note">施策内容からデザイン用プロンプトを生成</span>
+      </summary>
+
+      <div class="tool-accordion-body">
+        <p class="module-note">
+          EBP実践設計支援で整理した施策内容のうち、広報物の作成に必要な部分だけを貼り付けてください。
+          この欄の内容も外部へ自動送信せず、ブラウザ内でデザイン用プロンプトを生成します。
+        </p>
+
+        <div class="field">
+          <label for="designSource">施策内容・AI回答の貼り付け</label>
+          <p class="help">
+            施策の目的、対象者、促したい行動、実施場所、想定メカニズムなどが分かる部分を貼り付けてください。AI回答全文である必要はありません。
+          </p>
+          <textarea id="designSource" rows="9" placeholder="例：選択した施策、対象者、促したい行動、実施場所、ロジックモデルの関連部分など"></textarea>
         </div>
-        <div class="reference-box">
-          <h3>確認対象文献・識別子</h3>
-          <div id="evidenceReferences" class="reference-list"></div>
+
+        <div class="design-form-grid">
+          <div class="field">
+            <label for="designMedium">媒体</label>
+            <select id="designMedium" class="select-input">
+              <option value="チラシ">チラシ</option>
+              <option value="ポスター" selected>ポスター</option>
+              <option value="のぼり旗">のぼり旗</option>
+              <option value="横断幕">横断幕</option>
+              <option value="スマホ画面">スマホ画面</option>
+              <option value="SNS投稿画像">SNS投稿画像</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="designSize">出力サイズ</label>
+            <select id="designSize" class="select-input"></select>
+          </div>
+
+          <div class="field">
+            <label for="designCharacter">キャラクター</label>
+            <select id="designCharacter" class="select-input">
+              <option value="あり">あり</option>
+              <option value="なし" selected>なし</option>
+              <option value="未定">未定</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="designCharacterRole">キャラクターの役割</label>
+            <select id="designCharacterRole" class="select-input">
+              <option value="主役">主役</option>
+              <option value="補助" selected>補助</option>
+              <option value="ワンポイント">ワンポイント</option>
+            </select>
+          </div>
         </div>
-        <div class="deep-links" aria-label="ファクトチェック検索先">
-          <button id="evidenceHubBtn" type="button" class="link-button" disabled>研究HUBで確認</button>
-          <button id="evidenceOverseasProblemBtn" type="button" class="link-button" disabled>海外EBPナビ：課題から確認</button>
-          <button id="evidenceOverseasInterventionBtn" type="button" class="link-button" disabled>海外EBPナビ：対策から確認</button>
-          <button id="evidenceCopyBtn" type="button" class="link-button" disabled>検索語をコピー</button>
+
+        <div class="field">
+          <label for="designRequired">必ず入れたい文字・要素（任意）</label>
+          <p class="help">組織名、キャンペーン名、QRコード、連絡先、既に決まっているコピーなど。</p>
+          <textarea id="designRequired" rows="3" placeholder="例：○○警察署、二重ロックを呼びかける文言、QRコード用スペース"></textarea>
         </div>
-        <p class="help evidence-disclaimer">検索結果が見つからない場合も「研究が存在しない」とは断定せず、原著・J-STAGE・CiNii Research・出版社・公的機関等を追加確認してください。</p>
+
+        <div class="actions module-actions">
+          <button id="designGenerateBtn" class="secondary" type="button">デザイン用プロンプトを生成</button>
+          <button id="designClearBtn" class="secondary" type="button">入力をクリア</button>
+        </div>
+
+        <p id="designStatus" class="copy-status" role="status"></p>
+
+        <div id="designPromptWrap" class="design-prompt-wrap hidden">
+          <div class="field">
+            <label for="designPrompt">利用者AIへ貼り付けるプロンプト</label>
+            <textarea id="designPrompt" rows="18" readonly></textarea>
+          </div>
+          <div class="actions module-actions">
+            <button id="designCopyBtn" class="primary" type="button">デザイン用プロンプトをコピー</button>
+          </div>
+          <p class="help">
+            コピー後、所属組織で利用が認められているAIに貼り付けてください。画像生成に対応するAIであれば、各案の完成イメージ作成にも利用できます。
+          </p>
+        </div>
       </div>
-    </section>
+    </details>
 
     <section class="panel compact">
       <h2>コピー後の使い方</h2>
@@ -195,7 +289,8 @@
         <li>所属組織で利用が認められているChatGPT、Gemini、Copilot等のAIを開きます。</li>
         <li>新しいチャットに貼り付けて送信します。</li>
         <li>AIからの追加質問に答えながら、施策案・測定方法・評価設計を進めます。</li>
-        <li>AIが示した施策・研究はEvidence Checkへ貼り戻し、研究HUB・海外EBPナビや原典で確認します。</li>
+        <li>AIが示した施策・研究は、必要に応じて折りたたみの「Evidence Check」へ貼り戻し、研究HUB・海外EBPナビや原典で確認します。</li>
+        <li>広報物が必要な施策は、折りたたみの「広報物作成支援」に施策内容の一部を貼り付け、デザイン用プロンプトを生成して利用中のAIへ戻します。</li>
       </ol>
       <p class="muted">このページ自体はAIへ送信しません。どのAIを利用するかは、所属組織のルールに従ってください。</p>
     </section>
